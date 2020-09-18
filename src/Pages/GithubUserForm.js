@@ -1,34 +1,37 @@
 import React, { useState } from "react"
 
-const GithubUserForm = () => {
+import { getUserInfosRequest } from "../api/userRequest"
+import { Input } from "../Components/Input"
+import { Button } from "../Components/Button"
+import { Form } from "../Components/Form"
+
+export const GithubUserForm = ({ setUserInfos }) => {
   const [errors, setErrors] = useState("")
 
-  const handleSubmit = event => {
+  const handleSubmit = async event => {
     event.preventDefault()
     setErrors("")
     const token = event.target.token.value
     const name = event.target.name.value
 
     if (!name || !token) {
-      setErrors("Les champs sont obligatoires")
+      setErrors("All fields are mandatory")
     }
 
-    console.log({
-      token,
-      name
-    })
+    try {
+      const list = await getUserInfosRequest(token, name)
+      setUserInfos(list)
+    } catch (error) {
+      setErrors("An error just occured. Please check your credentials")
+    }
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input name="name" type="text" placeholder="Enter your name" />
-      <input name="token" type="text" placeholder="Enter your github access token" />
-      <input type="submit" value="See your stats" />
+    <Form onSubmit={handleSubmit}>
+      <Input type="text" autocomplete="on" name="name" placeholder="Enter your name" />
+      <Input type="password" name="token" autocomplete="on" placeholder="Enter your github access token" />
+      <Button type="submit">See your stats</Button>
       { errors && <p>{errors}</p>}
-    </form>
+    </Form>
   )
-}
-
-export {
-  GithubUserForm,
 }

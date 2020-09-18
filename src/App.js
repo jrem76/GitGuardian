@@ -1,23 +1,15 @@
-import React from 'react'
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-} from "react-router-dom";
+import React, { useState } from 'react'
 import { GithubUserForm } from './Pages/GithubUserForm'
+import { UserInfos } from './Pages/UserInfos'
 
-const App = () => {
+export const App = () => {
+  const [userInfos, setUserInfos] = useState(null)
   return (
-    <Router>
-      <div>
-        <Switch>
-          <Route exact path="/">
-            <GithubUserForm />
-          </Route>
-        </Switch>
-      </div>
-    </Router>
+    <div>
+      {!userInfos && <GithubUserForm setUserInfos={userInfos => setUserInfos(userInfos)}/>}
+      {
+        userInfos && <UserInfos userInfos={userInfos}></UserInfos>
+      }
+    </div>
   )
 }
-
-export { App }
